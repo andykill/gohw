@@ -1,4 +1,4 @@
-module github.com/andykill/hw01_hello_otus
+module github.com/andykill/gohw/hw01_hello_otus
 
 go 1.15
 

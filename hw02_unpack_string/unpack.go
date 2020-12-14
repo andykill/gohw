@@ -28,35 +28,42 @@ func Unpack(str string) (result string, err error) {
 			break
 		}
 		nextSymbol := rune(str[i+1])
-		if nextSymbol == symbol {
+		switch {
+		case nextSymbol == symbol:
 			return "", err
-		} else if symbolStr == "\\" {
-			i++
-			builder.WriteString(string(nextSymbol))
-		} else if unicode.IsDigit(nextSymbol) {
-			var countString strings.Builder
-			countString.WriteString(string(nextSymbol))
-			j := i + 2
-			for j < lenStr {
-				if !unicode.IsDigit(rune(str[j])) {
-					break
+		case symbolStr == "\\":
+			{
+				i++
+				builder.WriteString(string(nextSymbol))
+			}
+		case unicode.IsDigit(nextSymbol):
+			{
+				var countString strings.Builder
+				countString.WriteString(string(nextSymbol))
+				j := i + 2
+				for j < lenStr {
+					if !unicode.IsDigit(rune(str[j])) {
+						break
+					}
+					countString.WriteString(string(str[j]))
+					j++
 				}
-				countString.WriteString(string(str[j]))
-				j++
-			}
 
-			countInt, err := strconv.Atoi(countString.String())
-			if err != nil {
-				return "", err
+				countInt, err := strconv.Atoi(countString.String())
+				if err != nil {
+					return "", err
+				}
+				strRepeat := strings.Repeat(symbolStr, countInt)
+				builder.WriteString(strRepeat)
+				i = j
+				continue
 			}
-			strRepeat := strings.Repeat(symbolStr, countInt)
-			builder.WriteString(strRepeat)
-			i = j
-			continue
-		} else if symbol < 65 || (symbol > 90 && symbol < 97) || symbol > 122 {
+		case symbol < 65 || (symbol > 90 && symbol < 97) || symbol > 122:
 			return "", err
-		} else if !unicode.IsDigit(nextSymbol) {
-			builder.WriteString(symbolStr)
+		case !unicode.IsDigit(nextSymbol):
+			{
+				builder.WriteString(symbolStr)
+			}
 		}
 		i++
 	}

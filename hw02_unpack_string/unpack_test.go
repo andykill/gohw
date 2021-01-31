@@ -19,8 +19,12 @@ func TestUnpack(t *testing.T) {
 			expected: "aaaabccddddde",
 		},
 		{
-			input:    "abccd",
-			expected: "abccd",
+			input:    "a4bc12de",
+			expected: "aaaabccccccccccccde",
+		},
+		{
+			input:    "abcd",
+			expected: "abcd",
 		},
 		{
 			input:    "3abc",
@@ -40,10 +44,6 @@ func TestUnpack(t *testing.T) {
 		{
 			input:    "",
 			expected: "",
-		},
-		{
-			input:    "aaa0b",
-			expected: "aab",
 		},
 	} {
 		result, err := Unpack(tst.input)

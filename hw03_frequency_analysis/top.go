@@ -2,51 +2,47 @@ package hw03_frequency_analysis //nolint:golint,stylecheck
 import (
 	"sort"
 	"strings"
-	"unicode"
 )
 
 func Top10(str string) []string {
-	str = strings.ToLower(str)
 	counter := map[string]int{}
-
-	for _, word := range strings.FieldsFunc(str, isAccept) {
-		if word == "-" {
-			continue
-		}
-		if keyInMap(word, counter) {
+	stringSlice := strings.Fields(str)
+	for _, word := range stringSlice {
+		_, ok := counter[word]
+		if ok {
 			counter[word]++
+		} else {
+			counter[word] = 1
 		}
 	}
-	keys := sortMao(counter)
+	type strCount struct {
+		Str   string
+		Count int
+	}
+
+	items := []strCount{}
+	for k, v := range counter {
+		items = append(items, strCount{k, v})
+	}
+
+	sort.Slice(items, func(i, j int) bool {
+		itemI := items[i]
+		itemJ := items[j]
+
+		if itemI.Count == itemJ.Count {
+			return itemI.Str < itemJ.Str
+		}
+
+		return itemI.Count > itemJ.Count
+	})
+
 	result := []string{}
-	for _, k := range keys {
+	for _, item := range items {
 		if len(result) == 10 {
 			break
 		}
-		result = append(result, k)
+		result = append(result, item.Str)
 	}
 
 	return result
-}
-
-func keyInMap(str string, strMap map[string]int) bool {
-	for v := range strMap {
-		if v == str {
-			return true
-		}
-	}
-	return false
-}
-
-func isAccept(r rune) bool {
-	return r != 45 && !unicode.IsLetter(r) && !unicode.IsNumber(r)
-}
-
-func sortMao(counter map[string]int) []string {
-	keys := make([]string, 0, len(counter))
-	for k := range counter {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-	return keys
 }

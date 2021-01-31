@@ -1,13 +1,17 @@
 package hw03_frequency_analysis //nolint:golint
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
 
 // Change to true if needed
-var taskWithAsteriskIsCompleted = true
+var taskWithAsteriskIsCompleted = false
+
+var catExpected = []string{"and", "dog,", "one", "cat", "cats", "man", "two"}
+var catDog = `cat and dog, one dog, two cats and one man`
 
 var text = `Как видите, он  спускается  по  лестнице  вслед  за  своим
 	другом   Кристофером   Робином,   головой   вниз,  пересчитывая
@@ -51,10 +55,32 @@ func TestTop10(t *testing.T) {
 	t.Run("positive test", func(t *testing.T) {
 		if taskWithAsteriskIsCompleted {
 			expected := []string{"он", "а", "и", "что", "ты", "не", "если", "то", "его", "кристофер", "робин", "в"}
-			require.Subset(t, expected, Top10(text))
+			fmt.Println(expected)
+			tt := Top10(text)
+			fmt.Println(tt)
+			require.Equal(t, expected, tt)
 		} else {
 			expected := []string{"он", "и", "а", "что", "ты", "не", "если", "-", "то", "Кристофер"}
 			require.ElementsMatch(t, expected, Top10(text))
 		}
 	})
+}
+
+func TestTop3(t *testing.T) {
+	t.Run("positive top 3", func(t *testing.T) {
+		//expected := []string{"and", "cat", "cats", "dog,", "man", "one", "two"}
+		//fmt.Println(expected)
+		//fmt.Println(Top10(catDog))
+		require.Equal(t, catExpected, Top10(catDog))
+	})
+
+}
+func TestEmpty(t *testing.T) {
+	t.Run("positive Empty", func(t *testing.T) {
+		expected := []string{}
+		//fmt.Println(expected)
+		//fmt.Println(Top10(catDog))
+		require.Equal(t, expected, Top10(" "))
+	})
+
 }

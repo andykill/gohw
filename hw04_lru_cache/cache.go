@@ -1,4 +1,4 @@
-package hw04_lru_cache //nolint:golint,stylecheck
+package hw04LruCache //nolint:golint,stylecheck
 
 type Key string
 

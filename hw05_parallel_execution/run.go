@@ -11,8 +11,7 @@ var ErrErrorsLimitExceeded = errors.New("errors limit exceeded")
 type Task func() error
 
 func Run(tasks []Task, n int, m int) error {
-	ch := make(chan Task)
-	producer(tasks, ch)
+	ch := producer(tasks)
 
 	mu := sync.Mutex{}
 	wg := sync.WaitGroup{}
@@ -48,9 +47,14 @@ func Run(tasks []Task, n int, m int) error {
 	}
 	return nil
 }
-func producer(tasks []Task, ch chan<- Task) {
-	for _, t := range tasks {
-		ch <- t
-	}
-	close(ch)
+
+func producer(tasks []Task) <-chan Task {
+	ch := make(chan Task)
+	go func() {
+		defer close(ch)
+		for _, t := range tasks {
+			ch <- t
+		}
+	}()
+	return ch
 }

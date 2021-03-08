@@ -1,4 +1,4 @@
-package hw03_frequency_analysis //nolint:golint
+package hw03FrequencyAnalysis //nolint:golint
 
 import (
 	"fmt"

@@ -2,4 +2,4 @@ module github.com/andykill/gohw/hw01_hello_otus
 
 go 1.16
 
-require github.com/golang/example v0.0.0-20170904185048-46695d81d1fa
+require golang.org/x/example v0.0.0-20210113200257-bcf50bfd7dcd // indirect

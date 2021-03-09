@@ -1,6 +1,7 @@
 package hw05_parallel_execution //nolint:golint,stylecheck
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 	"sync/atomic"
@@ -11,6 +12,42 @@ import (
 	"go.uber.org/goleak"
 )
 
+func TestHalfRun(t *testing.T) {
+
+	t.Run("tasks half errors", func(t *testing.T) {
+		tasksCount := 20
+		tasks := make([]Task, 0, tasksCount)
+
+		var runTasksCount int32
+		var errorCount int32
+		var sumTime time.Duration
+
+		for i := 0; i < tasksCount; i++ {
+			taskSleep := time.Millisecond * time.Duration(rand.Intn(100))
+			sumTime += taskSleep
+
+			tasks = append(tasks, func() error {
+				time.Sleep(taskSleep)
+				if (i % 2) == 0 {
+					atomic.AddInt32(&errorCount, 1)
+					return errors.New("")
+				}
+				atomic.AddInt32(&runTasksCount, 1)
+				return nil
+			})
+		}
+
+		workersCount := 5
+		maxErrorsCount := tasksCount / 2
+		start := time.Now()
+		_ = Run(tasks, workersCount, maxErrorsCount)
+		elapsedTime := time.Since(start)
+		//require.Nil(t, result)
+
+		require.NotEqual(t, maxErrorsCount, errorCount, "максимальное количество ошибок должно быть меньше")
+		require.LessOrEqual(t, int64(elapsedTime), int64(sumTime/2), "tasks were run sequentially?")
+	})
+}
 func TestRun(t *testing.T) {
 	defer goleak.VerifyNone(t)
 
@@ -66,4 +103,5 @@ func TestRun(t *testing.T) {
 		require.Equal(t, runTasksCount, int32(tasksCount), "not all tasks were completed")
 		require.LessOrEqual(t, int64(elapsedTime), int64(sumTime/2), "tasks were run sequentially?")
 	})
+
 }

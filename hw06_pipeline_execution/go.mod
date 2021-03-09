@@ -1,5 +1,5 @@
-module github.com/fixme_my_friend/hw06_pipeline_execution
+module github.com/andykill/gohw/hw06_pipeline_execution
 
-go 1.15
+go 1.16
 
 require github.com/stretchr/testify v1.5.1

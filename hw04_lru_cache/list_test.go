@@ -52,7 +52,7 @@ func TestList(t *testing.T) {
 	})
 }
 
-func TestMoreList(t *testing.T) {
+func TestPerebor(t *testing.T) {
 	t.Run("perebor list", func(t *testing.T) {
 		r := rand.New(rand.NewSource(time.Now().UnixNano()))
 		cnt := r.Intn(20)

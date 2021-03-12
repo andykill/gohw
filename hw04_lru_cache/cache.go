@@ -1,4 +1,5 @@
-package hw04LruCache //nolint:golint,stylecheck
+package hw04_lru_cache //nolint:golint,stylecheck,revive
+import "errors"
 
 type Key string
 
@@ -52,10 +53,13 @@ func (c *lruCache) Clear() {
 	c.items = make(map[Key]*cacheItem, c.capacity)
 }
 
-func NewCache(capacity int) Cache {
+func NewCache(capacity int) (Cache, error) {
+	if capacity < 0 {
+		return &lruCache{}, errors.New("dont valid capacity value")
+	}
 	return &lruCache{
 		capacity,
 		new(list),
 		make(map[Key]*cacheItem, capacity),
-	}
+	}, nil
 }

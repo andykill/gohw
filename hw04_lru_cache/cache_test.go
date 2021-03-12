@@ -1,4 +1,4 @@
-package hw04LruCache //nolint:golint,stylecheck
+package hw04_lru_cache //nolint:golint,stylecheck,revive
 
 import (
 	"math/rand"
@@ -11,7 +11,8 @@ import (
 
 func TestCache(t *testing.T) {
 	t.Run("empty cache", func(t *testing.T) {
-		c := NewCache(10)
+		c, err := NewCache(10)
+		require.NoError(t, err, err.Error())
 
 		_, ok := c.Get("aaa")
 		require.False(t, ok)
@@ -21,7 +22,8 @@ func TestCache(t *testing.T) {
 	})
 
 	t.Run("simple", func(t *testing.T) {
-		c := NewCache(5)
+		c, err := NewCache(5)
+		require.NoError(t, err, err.Error())
 
 		wasInCache := c.Set("aaa", 100)
 		require.False(t, wasInCache)
@@ -57,7 +59,8 @@ func TestCache(t *testing.T) {
 func TestCacheMultithreading(t *testing.T) {
 	t.Skip() // NeedRemove if task with asterisk completed
 
-	c := NewCache(10)
+	c, err := NewCache(10)
+	require.NoError(t, err, err.Error())
 	wg := &sync.WaitGroup{}
 	wg.Add(2)
 
@@ -76,4 +79,9 @@ func TestCacheMultithreading(t *testing.T) {
 	}()
 
 	wg.Wait()
+}
+
+func TestNotValidCapacity(t *testing.T) {
+	_, err := NewCache(-10)
+	require.Error(t, err, err.Error())
 }

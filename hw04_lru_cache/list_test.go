@@ -1,7 +1,9 @@
-package hw04LruCache //nolint:golint,stylecheck
+package hw04_lru_cache //nolint:golint,stylecheck,revive
 
 import (
+	"math/rand"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
 )
@@ -47,5 +49,25 @@ func TestList(t *testing.T) {
 			elems = append(elems, i.Value.(int))
 		}
 		require.Equal(t, []int{70, 80, 60, 40, 10, 30, 50}, elems)
+	})
+}
+
+func TestMoreList(t *testing.T) {
+	t.Run("perebor list", func(t *testing.T) {
+		r := rand.New(rand.NewSource(time.Now().UnixNano()))
+		cnt := r.Intn(20)
+		l := NewList()
+		for i := 0; i < cnt; i++ {
+			vRnd := r.Intn(2000)
+			l.PushFront(vRnd)
+		}
+		endValue := r.Intn(2000)
+		l.PushBack(endValue)
+
+		for i := 0; i < cnt+1; i++ {
+			l.MoveToFront(l.Back())
+		}
+
+		require.Equal(t, endValue, l.Back().Value)
 	})
 }

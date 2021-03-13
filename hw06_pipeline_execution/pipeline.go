@@ -1,5 +1,4 @@
 package hw06_pipeline_execution //nolint:golint,stylecheck,revive
-import "sync"
 
 type (
 	In  = <-chan interface{}
@@ -13,28 +12,24 @@ func ExecutePipeline(in In, done In, stages ...Stage) (out Out) {
 	ch := make(chan Stage)
 	defer close(ch)
 
-	var wg sync.WaitGroup
-	wg.Add(len(stages))
-
 	go func() {
-		defer wg.Done()
+		select {
+		case <-done:
+			return
+		default:
+		}
 		for {
-			select {
-			case <-done:
-				return
-			case stage, ok := <-ch:
-				if !ok {
-					return
-				}
-				in = stage(in)
+			stage, ok := <-ch
+			if !ok {
+				break
 			}
+			in = stage(in)
 		}
 	}()
 
 	for _, stage := range stages {
 		ch <- stage
 	}
-	wg.Wait()
 	out = in
 	return out
 }

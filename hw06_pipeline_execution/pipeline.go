@@ -11,7 +11,6 @@ type Stage func(in In) (out Out)
 func ExecutePipeline(in In, done In, stages ...Stage) (out Out) {
 	for _, stage := range stages {
 		pereliv := make(chan interface{})
-
 		go func(in In, pereliv chan interface{}) {
 			defer close(pereliv)
 

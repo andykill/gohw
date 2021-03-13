@@ -31,11 +31,17 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 		return err
 	}
 
-	if limit > fileInfo.Size() {
+	if limit == 0 || limit > fileInfo.Size() {
 		limit = fileInfo.Size()
 	}
+
+	if _, err := out.Seek(offset, io.SeekStart); err != nil {
+		panic(err)
+	}
+	res := io.LimitReader(out, limit)
+
 	bar := pb.Full.Start64(limit)
-	barReader := bar.NewProxyReader(out)
+	barReader := bar.NewProxyReader(res)
 
 	_, err = io.Copy(in, barReader)
 	if err != nil {

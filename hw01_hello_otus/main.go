@@ -2,8 +2,7 @@ package main
 
 import (
 	"fmt"
-
-	"github.com/golang/example/stringutil"
+	"golang.org/x/example/stringutil"
 )
 
 func main() {

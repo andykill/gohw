@@ -13,7 +13,6 @@ import (
 )
 
 func TestHalfRun(t *testing.T) {
-
 	t.Run("tasks half errors", func(t *testing.T) {
 		tasksCount := 20
 		tasks := make([]Task, 0, tasksCount)
@@ -42,12 +41,12 @@ func TestHalfRun(t *testing.T) {
 		start := time.Now()
 		_ = Run(tasks, workersCount, maxErrorsCount)
 		elapsedTime := time.Since(start)
-		//require.Nil(t, result)
 
 		require.NotEqual(t, maxErrorsCount, errorCount, "максимальное количество ошибок должно быть меньше")
 		require.LessOrEqual(t, int64(elapsedTime), int64(sumTime/2), "tasks were run sequentially?")
 	})
 }
+
 func TestRun(t *testing.T) {
 	defer goleak.VerifyNone(t)
 
@@ -103,5 +102,4 @@ func TestRun(t *testing.T) {
 		require.Equal(t, runTasksCount, int32(tasksCount), "not all tasks were completed")
 		require.LessOrEqual(t, int64(elapsedTime), int64(sumTime/2), "tasks were run sequentially?")
 	})
-
 }

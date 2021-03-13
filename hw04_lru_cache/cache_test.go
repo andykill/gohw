@@ -12,7 +12,7 @@ import (
 func TestCache(t *testing.T) {
 	t.Run("empty cache", func(t *testing.T) {
 		c, err := NewCache(10)
-		require.NoError(t, err, err.Error())
+		require.NoError(t, err, err)
 
 		_, ok := c.Get("aaa")
 		require.False(t, ok)
@@ -23,7 +23,7 @@ func TestCache(t *testing.T) {
 
 	t.Run("simple", func(t *testing.T) {
 		c, err := NewCache(5)
-		require.NoError(t, err, err.Error())
+		require.NoError(t, err, err)
 
 		wasInCache := c.Set("aaa", 100)
 		require.False(t, wasInCache)
@@ -60,7 +60,7 @@ func TestCacheMultithreading(t *testing.T) {
 	t.Skip() // NeedRemove if task with asterisk completed
 
 	c, err := NewCache(10)
-	require.NoError(t, err, err.Error())
+	require.NoError(t, err, err)
 	wg := &sync.WaitGroup{}
 	wg.Add(2)
 
@@ -83,5 +83,5 @@ func TestCacheMultithreading(t *testing.T) {
 
 func TestNotValidCapacity(t *testing.T) {
 	_, err := NewCache(-10)
-	require.Error(t, err, err.Error())
+	require.Error(t, err, err)
 }

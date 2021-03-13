@@ -10,6 +10,8 @@ var (
 )
 
 func Copy(fromPath, toPath string, offset, limit int64) error {
-	// Place your code here.
+	// Пустой пул реквест
+	//Place your code here.
+
 	return nil
 }

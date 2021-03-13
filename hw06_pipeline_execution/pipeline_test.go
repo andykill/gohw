@@ -1,4 +1,4 @@
-package hw06pipelineexecution
+package hw06_pipeline_execution //nolint:golint,stylecheck,revive
 
 import (
 	"strconv"

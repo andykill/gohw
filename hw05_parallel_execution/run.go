@@ -3,6 +3,7 @@ package hw05_parallel_execution //nolint:golint,stylecheck,revive
 import (
 	"errors"
 	"sync"
+	"sync/atomic"
 )
 
 var ErrErrorsLimitExceeded = errors.New("errors limit exceeded")
@@ -12,8 +13,7 @@ type Task func() error
 func Run(tasks []Task, n int, m int) error {
 	ch := make(chan Task, len(tasks))
 
-	var errCnt int
-	var mu sync.Mutex
+	var errCnt int32
 	var wg sync.WaitGroup
 
 	for i := 0; i < n; i++ {
@@ -22,12 +22,9 @@ func Run(tasks []Task, n int, m int) error {
 			defer wg.Done()
 
 			for {
-				mu.Lock()
-				if errCnt > m {
-					mu.Unlock()
+				if atomic.LoadInt32(&errCnt) > int32(m) {
 					return
 				}
-				mu.Unlock() // хз как подругому (((
 				task, ok := <-ch
 
 				if !ok {
@@ -35,9 +32,7 @@ func Run(tasks []Task, n int, m int) error {
 				}
 
 				if err := task(); err != nil {
-					mu.Lock()
-					errCnt++
-					mu.Unlock()
+					atomic.AddInt32(&errCnt, 1)
 				}
 			}
 		}()
@@ -50,7 +45,7 @@ func Run(tasks []Task, n int, m int) error {
 
 	wg.Wait()
 
-	if errCnt > 0 && errCnt >= m {
+	if errCnt > 0 && atomic.LoadInt32(&errCnt) >= int32(m) {
 		return ErrErrorsLimitExceeded
 	}
 

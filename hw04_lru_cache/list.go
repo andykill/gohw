@@ -35,11 +35,10 @@ func (l *list) Back() *ListItem {
 }
 
 func (l *list) PushFront(v interface{}) *ListItem {
-	var el = ListItem{
+	el := ListItem{
 		Value: v,
 		prev:  nil,
 	}
-
 	if l.front != nil {
 		l.front.prev = &el
 		el.Next = l.front
@@ -53,10 +52,7 @@ func (l *list) PushFront(v interface{}) *ListItem {
 }
 
 func (l *list) PushBack(v interface{}) *ListItem {
-	var elem = ListItem{
-		Value: v,
-		Next:  nil,
-	}
+	elem := ListItem{Value: v, Next: nil}
 
 	if l.back != nil {
 		l.back.Next = &elem
